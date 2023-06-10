@@ -7,6 +7,10 @@ import pointsFragmentShader from '../shaders/earthPoints/fragment.glsl?raw';
 import glowVertexShader from '../shaders/earthGlow/vertex.glsl?raw';
 import glowFragmentShader from '../shaders/earthGlow/fragment.glsl?raw';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
+import CameraControls from '../Controls/CameraControls';
+import Animation from '../Controls/Animation';
+import GUI from 'lil-gui';
+import { gsap } from 'gsap';
 
 export default function () {
   const renderer = new THREE.WebGLRenderer({
@@ -32,12 +36,35 @@ export default function () {
     0.1,
     100
   );
-  camera.position.set(0, 0, 2);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.1;
+  /** library */
+  const gui = new GUI();
+  
+  /** animation */
+  let introStart = true;
+  const animation = new Animation(introStart,gui,gsap);
+  
+  //introStart = animation.animationIntro();
+  
 
+
+
+  /** Camera */
+  camera.position.set(0, 0, 1.9);
+
+  /** Controls */
+  const orbitControls = () => {
+    const controls = new OrbitControls(camera, renderer.domElement);
+
+    const cameraControls = new CameraControls(controls)
+    cameraControls.cameraSet()
+
+    cameraControls.cameraInsertPage()
+
+    return controls;
+  }
+  
+  /** create Earth */
   const createEarth = () => {
     const material = new THREE.ShaderMaterial({
       wireframe: false,
@@ -58,6 +85,7 @@ export default function () {
     return mesh;
   };
 
+  /** create EarthPointe*/
   const createEarthPoints = () => {
     const material = new THREE.ShaderMaterial({
       wireframe: true,
@@ -86,6 +114,8 @@ export default function () {
     return mesh;
   };
 
+  
+  /** create EarthGlow */
   const createEarthGlow = () => {
     const material = new THREE.ShaderMaterial({
       uniforms: {
@@ -95,7 +125,6 @@ export default function () {
       },
       vertexShader: glowVertexShader,
       fragmentShader: glowFragmentShader,
-      wireframe: false,
       side: THREE.BackSide,
       transparent: true,
     });
@@ -106,6 +135,10 @@ export default function () {
     return mesh;
   };
 
+
+
+
+  /** create */
   const create = () => {
     const earth = createEarth();
     const earthPoints = createEarthPoints();
@@ -136,7 +169,7 @@ export default function () {
     window.addEventListener('resize', resize);
   };
 
-  const draw = (obj) => {
+  const draw = (obj, orbitControl) => {
     const { earth, earthPoints, earthGlow } = obj;
     earth.rotation.x += 0.0005;
     earth.rotation.y += 0.0005;
@@ -144,25 +177,26 @@ export default function () {
     earthPoints.rotation.x += 0.0005;
     earthPoints.rotation.y += 0.0005;
 
-    controls.update();
+    orbitControl.update();
     renderer.render(scene, camera);
-
-    earthGlow.material.uniforms.uZoom.value = controls.target.distanceTo(
-      controls.object.position
+    // console.log(orbitControl.getDistance)
+    earthGlow.material.uniforms.uZoom.value = orbitControl.target.distanceTo(
+      orbitControl.object.position
     );
 
     earthPoints.material.uniforms.uTime.value = clock.getElapsedTime();
 
     requestAnimationFrame(() => {
-      draw(obj);
+      draw(obj, orbitControl);
     });
   };
 
   const initialize = () => {
     const obj = create();
+    const orbitControl = orbitControls()
     addEvent();
     resize();
-    draw(obj);
+    draw(obj, orbitControl);
   };
 
   initialize();

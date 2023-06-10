@@ -1,5 +1,6 @@
 {
   "name": "philogrammer",
+  "homepage": "https://gangsuuu.github.io/earth",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,20 +12,25 @@
     "lint:fix": "npm run lint -- --fix",
     "prettier": "npx prettier src test --check",
     "prettier:fix": "npm run prettier -- --write",
-    "format": "npm run prettier:fix && npm run lint:fix"
+    "format": "npm run prettier:fix && npm run lint:fix",
+    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build"
   },
   "devDependencies": {
     "eslint": "^7.32.0 || ^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.2",
+    "gh-pages": "^5.0.0",
     "prettier": "^2.7.1",
     "sass": "^1.56.1",
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
     "dat.gui": "^0.7.9",
-    "gsap": "^3.11.0",
+    "gsap": "^3.12.1",
+    "lil-gui": "^0.18.1",
     "three": "^0.147.0"
   }
 }
