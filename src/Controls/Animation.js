@@ -1,10 +1,8 @@
-import GUI from 'lil-gui';
 import { gsap } from 'gsap';
 
 export default class Animation{
-  constructor(introStart,gui,gsap) {
+  constructor(introStart,gsap) {
     this.introStart = introStart;
-    this.gui = gui;
     this.gsap = gsap;
   }
   animationIntro() {

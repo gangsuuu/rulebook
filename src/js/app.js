@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 import vertexShader from '../shaders/earth/vertex.glsl?raw';
 import fragmentShader from '../shaders/earth/fragment.glsl?raw';
 import pointsVertexShader from '../shaders/earthPoints/vertex.glsl?raw';
 import pointsFragmentShader from '../shaders/earthPoints/fragment.glsl?raw';
 import glowVertexShader from '../shaders/earthGlow/vertex.glsl?raw';
 import glowFragmentShader from '../shaders/earthGlow/fragment.glsl?raw';
-import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 import CameraControls from '../Controls/CameraControls';
 import Animation from '../Controls/Animation';
 import GUI from 'lil-gui';
@@ -37,16 +37,30 @@ export default function () {
     100
   );
 
+  /** BackGround 
+  const cubeTextureLoader = new THREE.CubeTextureLoader();
+  const environmentMap = cubeTextureLoader.load([
+   'assets/environment/px.png',
+   'assets/environment/nx.png',
+   'assets/environment/py.png',
+   'assets/environment/ny.png',
+   'assets/environment/pz.png',
+   'assets/environment/nz.png'
+  ])
+  environmentMap.encoding = THREE.sRGBEncoding;
+  scene.background = environmentMap;
+  scene.environment = environmentMap;
+*/
+
   /** library */
-  const gui = new GUI();
+  //const gui = new GUI();
   
   /** animation */
   let introStart = true;
-  const animation = new Animation(introStart,gui,gsap);
+  const animation = new Animation(introStart,gsap);
   
   //introStart = animation.animationIntro();
   
-
 
 
   /** Camera */
@@ -135,7 +149,32 @@ export default function () {
     return mesh;
   };
 
+  /** create Galaxis */
+  const createGalaxis = () => {
+    const count  = 10000;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++){
+      positions[i] = (Math.random() - 0.5) * 5;
+      positions[i + 1] = (Math.random() - 0.5) * 5;
+      positions[i + 2] = (Math.random() - 0.5) * 5; 
+    }
+    const starsGeometric = new THREE.BufferGeometry();
+    starsGeometric.setAttribute(
+      'position',
+      new THREE.BufferAttribute(positions, 3)
+    )
+    const starsMaterial = new THREE.PointsMaterial({
+      size : Math.random() * 0.007,
+      transparent : true,
+      depthWrite : false,
+      color: '#3f9f8e',
+      alphaMap : textureLoader.load('assets/particle.png'),
+      map: textureLoader.load('assets/particle.png'),
+    })
+    const star = new THREE.Points(starsGeometric, starsMaterial);
 
+    return star
+  }  
 
 
   /** create */
@@ -143,14 +182,16 @@ export default function () {
     const earth = createEarth();
     const earthPoints = createEarthPoints();
     const earthGlow = createEarthGlow();
+    const stars = createGalaxis()
     // const glowNormalHelper = new VertexNormalsHelper(earthGlow, 0.1);
 
-    scene.add(earth, earthPoints, earthGlow);
+    scene.add(earth, earthPoints, earthGlow, stars);
 
     return {
       earth,
       earthPoints,
       earthGlow,
+      stars
     };
   };
 
@@ -170,12 +211,18 @@ export default function () {
   };
 
   const draw = (obj, orbitControl) => {
-    const { earth, earthPoints, earthGlow } = obj;
+    const { earth, earthPoints, earthGlow, stars} = obj;
     earth.rotation.x += 0.0005;
     earth.rotation.y += 0.0005;
 
     earthPoints.rotation.x += 0.0005;
     earthPoints.rotation.y += 0.0005;
+
+    stars.rotation.x += 0.0007;
+    stars.rotation.y += 0.0007;
+
+
+
 
     orbitControl.update();
     renderer.render(scene, camera);
