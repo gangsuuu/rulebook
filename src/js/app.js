@@ -154,9 +154,9 @@ export default function () {
     const count  = 10000;
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++){
-      positions[i] = (Math.random() - 0.5) * 5;
-      positions[i + 1] = (Math.random() - 0.5) * 5;
-      positions[i + 2] = (Math.random() - 0.5) * 5; 
+      positions[i] = (Math.random() - 0.5) * 4;
+      positions[i + 1] = (Math.random() - 0.5) * 4;
+      positions[i + 2] = (Math.random() - 0.5) * 4; 
     }
     const starsGeometric = new THREE.BufferGeometry();
     starsGeometric.setAttribute(

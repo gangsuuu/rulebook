@@ -5,6 +5,8 @@ export default class Animation{
     this.introStart = introStart;
     this.gsap = gsap;
   }
+
+  /** Intro Aimation */
   animationIntro() {
     if (!this.introStart) return
     const introTimeLine = this.gsap.timeline()
@@ -28,9 +30,7 @@ export default class Animation{
         introPage.innerHTML += letter.shift();
         console.log("write")
       }
-
       await wait(1400);
-
       if (letters[i + 1]) remove()
       else {
         introTimeLine.to(
@@ -68,6 +68,9 @@ export default class Animation{
     setTimeout(typing,1500);
     return false
   }
+  /** Scroll  */
+  scrollAnimation(){
 
-
+    
+  }
 }
