@@ -64,16 +64,13 @@ export default function () {
 
 
   /** Camera */
-  camera.position.set(0, 0, 1.9);
+  //camera.position.set(0, 0, 1.9);
+  camera.position.set(0, 0, 0.85);
 
   /** Controls */
+  const cameraControls = new CameraControls();
   const orbitControls = () => {
     const controls = new OrbitControls(camera, renderer.domElement);
-
-    const cameraControls = new CameraControls(controls)
-    cameraControls.cameraSet()
-
-    cameraControls.cameraInsertPage()
 
     return controls;
   }
@@ -206,20 +203,37 @@ export default function () {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   };
 
+  let lastScrollY = 0;
+  let entered = false;
   const addEvent = () => {
     window.addEventListener('resize', resize);
+    window.addEventListener("scroll", () => {
+      lastScrollY = animation.scrollAnimation(window.scrollY,lastScrollY);
+      animation.enterToContent(camera);
+    });
+    window.addEventListener('mousedown', (e) => {
+      console.log('d '+e.clientX)
+      console.log('d ' +e.clientY)
+    })
+    window.addEventListener('mouseup', (e) => {
+      console.log('u '+e.clientX)
+      console.log('u '+e.clientY)
+    })
+  
   };
+  
+
 
   const draw = (obj, orbitControl) => {
     const { earth, earthPoints, earthGlow, stars} = obj;
-    earth.rotation.x += 0.0005;
+    // earth.rotation.x += 0.0005;
     earth.rotation.y += 0.0005;
-
-    earthPoints.rotation.x += 0.0005;
+    earth.rotation.x = 0.3;
+    // earthPoints.rotation.x += 0.0005;
     earthPoints.rotation.y += 0.0005;
-
-    stars.rotation.x += 0.0007;
-    stars.rotation.y += 0.0007;
+    earthPoints.rotation.x = 0.3;
+    // stars.rotation.x += 0.0007;
+     stars.rotation.y += 0.0007;
 
 
 
@@ -237,6 +251,9 @@ export default function () {
       draw(obj, orbitControl);
     });
   };
+
+
+
 
   const initialize = () => {
     const obj = create();

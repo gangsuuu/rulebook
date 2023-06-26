@@ -4,6 +4,9 @@ export default class Animation{
   constructor(introStart,gsap) {
     this.introStart = introStart;
     this.gsap = gsap;
+    this.scrollAnimationGsap = this.gsap.timeline()
+    this.entered = false;
+    let introPageOff = false;
   }
 
   /** Intro Aimation */
@@ -69,8 +72,93 @@ export default class Animation{
     return false
   }
   /** Scroll  */
-  scrollAnimation(){
-
+  scrollAnimation(y,lastY,camera){
+    const menuContainter = document.querySelector('.earthMenuContatiner')
+    const indexCotentBox = document.querySelector('.index-Content-Box')
+    const indexCotentMidle = document.querySelector('.index-Content-bottom')
+    const indexEartlogo = document.querySelector('.earth')
+    const moveIndexContentsTrigerStart = 620;
+    const moveIndexContentsTrigerEnd = 720;
     
+    if(y > lastY && y >= moveIndexContentsTrigerStart  && y <= moveIndexContentsTrigerEnd){
+      this.scrollAnimationGsap.to(
+        menuContainter,
+        {
+          duration : .2,
+          top : -120,
+        }
+      )
+      this.scrollAnimationGsap.to(
+        indexCotentBox,{
+          duration : .3,
+          right : -500,
+        }
+      )
+      this.scrollAnimationGsap.to(
+        indexEartlogo,
+        {
+          duration : .3,
+          left : -900,
+        }
+      )
+      this.scrollAnimationGsap.to(
+        indexCotentMidle,
+        {
+          duration : .11,
+          scale : 1.2,
+          bottom: -2,
+          onComplete: () => this.introPageOff = true
+        }
+      )
+    } else if(y < lastY && y >= moveIndexContentsTrigerStart  && y <= moveIndexContentsTrigerEnd){
+      this.scrollAnimationGsap.to(
+        menuContainter,
+        {
+          duration :.2,
+          top : 45,
+        }
+      )
+      this.scrollAnimationGsap.to(
+        indexCotentBox,{
+          duration : .3,
+          right : 105,
+        }
+      )
+      this.scrollAnimationGsap.to(
+        indexEartlogo,
+        {
+          duration : .3,
+          left : 0,
+          onComplete: () => this.introPageOff = false
+        }
+      )
+    }
+    const enterToContent = () => {
+      this.scrollAnimationGsap.to(
+        camera.position, {
+        z : 0.7,
+        duration : 2.5,
+        ease: 'expo'
+      })
+    }
+
+    lastY = y
+    return lastY;
   }
+enterToContent(camera) {
+  if(this.introPageOff){
+    // this.scrollAnimationGsap.to(
+    //   camera.position, {
+    //   z : 0.7,
+    //   duration : 2.5,
+    //   ease: 'expo',
+    //      onComplete: () => this.entered = true
+    // })
+  }
+  return this.entered = true;
+}
+moveView() {
+
+}
+
 }

@@ -8,17 +8,12 @@ export default class CameraControls{
   }
 
   cameraInsertPage(){
-    this.controls.enableDamping = true;
-    this.controls.enablePan = false
-    this.controls.dampingFactor = 0.1;
-    this.controls.minDistance  = 0.65;
-    this.controls.maxDistance  = 1.58;
   }
 
   cameraSet() {
 
   }
   cameraMove() {
-
+    
   }  
 }
